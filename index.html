@@ -337,6 +337,35 @@ html{
     color:#111;
 }
 
+.hero-image{
+    position: relative;
+    width:100%;
+    height:600px;
+}
+
+.hero-slider{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    border-radius:40px;
+    box-shadow:var(--shadow);
+}
+
+.hero-slide{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    opacity:0;
+    transition:opacity .8s ease;
+}
+
+.hero-slide.active{
+    opacity:1;
+}
+
 /*================ SECTION HEADER ================*/
 .section-header{
 
@@ -1537,30 +1566,26 @@ html{
     color:var(--primary); /* biru tema kamu */
 }
 
-.hero-slider{
-    position:relative;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    border-radius:40px;
-    box-shadow:var(--shadow);
+.news-track{
+
+display:flex;
+
+width:100%;
+
+height:100%;
+
 }
 
-.hero-slide{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
+.news-track img{
 
-    opacity:0;
-    transition:1s ease;
-    transform:scale(1.05);
-}
+width:100%;
 
-.hero-slide.active{
-    opacity:1;
-    transform:scale(1);
+flex-shrink:0;
+
+height:320px;
+
+object-fit:cover;
+
 }
 </style>
 <body>
@@ -1594,7 +1619,7 @@ html{
 
     </nav>
 
-</header>
+
 
 
 <!--========== HERO ==========-->
@@ -1633,22 +1658,21 @@ html{
 
         </div>
 
+<div class="hero-image">
 
-        <div class="hero-image">
+<div class="hero-slider">
 
-    <div class="hero-slider">
+<img class="hero-slide active" src="img/sampul1.jpg">
 
-        <img class="hero-slide active" src="img/sampul1.jpg" alt="">
-        <img class="hero-slide" src="img/sampul2.jpg" alt="">
-        <img class="hero-slide" src="img/sampul3.jpg" alt="">
+<img class="hero-slide" src="img/sampul2.jpg">
 
-    </div>
+<img class="hero-slide" src="img/sampul3.jpg">
 
 </div>
 
-        </div>
+</div>
 
-    </div>
+</div>
 
 </section>
 
@@ -1744,10 +1768,7 @@ html{
     </div>
 
 </section>
-
-    </section>
-
-
+   
     <!--========== PROGRAM ==========-->
 <section id="program" class="program">
 
@@ -1758,9 +1779,12 @@ html{
         <h2 class="section-title">Program RCB</h2>
     </div>
 
-    <div class="program-grid">
+    <div class="program-grid" id="programGrid">
 
         <div class="program-card active" data-category="all">
+            <div class="program-card">
+
+<div class="program-icon">
             <div class="program-icon">
     <i class="fa-solid fa-list"></i>
 </div>
@@ -1768,27 +1792,47 @@ html{
         </div>
 
         <div class="program-card" data-category="keagamaan">
+            <div class="program-card">
+
+<div class="program-icon">
             <i class="fa-solid fa-mosque"></i>
             <h3>Keagamaan</h3>
         </div>
 
         <div class="program-card" data-category="sosial">
+            <div class="program-card">
+
+<div class="program-icon">
             <i class="fa-solid fa-hands-helping"></i>
             <h3>Sosial</h3>
         </div>
 
         <div class="program-card" data-category="kepemudaan">
+            <div class="program-card">
+
+<div class="program-icon">
             <i class="fa-solid fa-people-group"></i>
             <h3>Kepemudaan</h3>
         </div>
 
         <div class="program-card" data-category="lingkungan">
+           <div class="program-card">
+
+<div class="program-icon">
             <i class="fa-solid fa-leaf"></i>
             <h3>Lingkungan</h3>
         </div>
 
         <div class="program-card" data-category="pendidikan">
-            <i class="fa-solid fa-book"></i>
+            <div class="program-card">
+
+<div class="program-icon">
+<i class="fa-solid fa-book"></i>
+</div>
+
+<h3>Pendidikan</h3>
+
+</div>
             <h3>Pendidikan</h3>
         </div>
 
@@ -2296,50 +2340,15 @@ html{
 
     </div>
 
-</footer>
+</section>
 
-    </section>
 
    <script>
-document.addEventListener("DOMContentLoaded", () => {
-
 /*================ DATA =================*/
 let activities = JSON.parse(localStorage.getItem("activities")) || [];
 let news = JSON.parse(localStorage.getItem("news")) || [];
 
-/*================ PROGRAM RENDER =================*/
-function renderProgram(){
-
-    const grid = document.getElementById("programGrid");
-    if(!grid) return;
-
-    let categories = {};
-
-    activities.forEach(item => {
-        if(item.category){
-            categories[item.category] = true;
-        }
-    });
-
-    grid.innerHTML = "";
-
-    Object.keys(categories).forEach(cat => {
-
-        let card = document.createElement("div");
-        card.className = "program-card";
-
-        card.innerHTML = `
-            <div class="program-icon">📌</div>
-            <h3>${capitalize(cat)}</h3>
-        `;
-
-        grid.appendChild(card);
-    });
-}
-
-function capitalize(str){
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
+document.addEventListener("DOMContentLoaded",()=>{
 
 /*================ ACTIVITY RENDER =================*/
 function renderActivities(){
@@ -2367,44 +2376,6 @@ function renderActivities(){
     });
 }
 
-/*================ NEWS RENDER =================*/
-function renderNews(){
-
-    const grid = document.getElementById("newsGrid");
-    if(!grid) return;
-
-    grid.innerHTML = "";
-
-    news.forEach(item => {
-
-        let images = "";
-
-        item.images.forEach(img => {
-            images += `<img src="${img}" alt="">`;
-        });
-
-        let card = document.createElement("div");
-        card.className = "news-card";
-
-        card.innerHTML = `
-            <div class="news-slider">
-                <div class="news-track">
-                    ${images}
-                </div>
-            </div>
-
-            <div class="news-info">
-                <span>${item.date}</span>
-                <h3>${item.title}</h3>
-                <p>${item.desc}</p>
-            </div>
-        `;
-
-        grid.appendChild(card);
-    });
-
-    initNewsSlider();
-}
 
 /*================ NEWS SLIDER (FIXED 1 VERSION ONLY) =================*/
 function initNewsSlider(){
@@ -2512,7 +2483,7 @@ window.addEventListener("scroll", () => {
 });
 
 /*================ INIT =================*/
-renderActivities(All);
+renderActivities(all);
 renderNews();
 renderProgram();
 
@@ -2599,27 +2570,32 @@ if(closeBtn){
     });
 }
 
-const heroSlides = document.querySelectorAll(".hero-slide");
+const heroSlides=document.querySelectorAll(".hero-slide");
 
-let heroIndex = 0;
+let heroIndex=0;
 
-function showHeroSlide(){
+function heroSlider(){
 
-    heroSlides.forEach(slide => {
+    heroSlides.forEach(slide=>{
         slide.classList.remove("active");
     });
 
+    heroSlides[heroIndex].classList.add("active");
+
     heroIndex++;
 
-    if(heroIndex >= heroSlides.length){
-        heroIndex = 0;
+    if(heroIndex>=heroSlides.length){
+        heroIndex=0;
     }
 
-    heroSlides[heroIndex].classList.add("active");
 }
 
-if(heroSlides.length > 0){
-    setInterval(showHeroSlide, 4000);
+if(heroSlides.length){
+
+    heroSlider();
+
+    setInterval(heroSlider,4000);
+
 }
 </script>
 
