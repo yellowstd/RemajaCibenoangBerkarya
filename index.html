@@ -2320,7 +2320,66 @@ object-fit:cover;
 </section>
 
 
-   <script>
+   <script type="module" src="js/script.js">
+       import { db } from "./firebase-config.js";
+
+import {
+collection,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+       async function renderActivities(){
+
+    const grid =
+    document.getElementById("activityGrid");
+
+    if(!grid) return;
+
+    grid.innerHTML = "";
+
+    const snapshot =
+    await getDocs(
+        collection(db,"activities")
+    );
+
+    snapshot.forEach(doc => {
+
+        const item = doc.data();
+
+        grid.innerHTML += `
+
+        <div class="activity-card">
+
+            <img src="${item.image}"
+                 alt="${item.title}">
+
+            <div class="activity-info">
+
+                <span>
+                    ${item.date}
+                </span>
+
+                <h3>
+                    ${item.title}
+                </h3>
+
+                <button class="detail-btn"
+                        data-title="${item.title}"
+                        data-date="${item.date}"
+                        data-desc="${item.desc}">
+
+                    Selengkapnya
+
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+    });
+
+}
 /*================ DATA =================*/
 let activities = JSON.parse(localStorage.getItem("activities")) || [];
 let news = JSON.parse(localStorage.getItem("news")) || [];
