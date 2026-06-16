@@ -2319,54 +2319,64 @@ object-fit:cover;
 
 </section>
 
+<script type="module" src="js/script.js">
+/* =========================
+   FIREBASE
+========================= */
 
-   <script type="module" src="js/script.js">
-       import { db } from "./firebase-config.js";
+import { db } from "./firebase-config.js";
 
 import {
-collection,
-getDocs
+    collection,
+    getDocs
 }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-       async function renderActivities(){
 
-    const grid =
-    document.getElementById("activityGrid");
 
-    if(!grid) return;
+/* =========================
+   RENDER ACTIVITY
+========================= */
+
+async function renderActivities(filter = "all") {
+
+    const grid = document.getElementById("activityGrid");
+
+    if (!grid) return;
 
     grid.innerHTML = "";
 
-    const snapshot =
-    await getDocs(
-        collection(db,"activities")
+    const snapshot = await getDocs(
+        collection(db, "activities")
     );
 
     snapshot.forEach(doc => {
 
         const item = doc.data();
 
+        if (
+            filter !== "all" &&
+            item.category !== filter
+        ) return;
+
         grid.innerHTML += `
 
         <div class="activity-card">
 
-            <img src="${item.image}"
-                 alt="${item.title}">
+            <img src="${item.image}" alt="${item.title}">
 
             <div class="activity-info">
 
-                <span>
-                    ${item.date}
-                </span>
+                <span>${item.date}</span>
 
-                <h3>
-                    ${item.title}
-                </h3>
+                <h3>${item.title}</h3>
 
-                <button class="detail-btn"
-                        data-title="${item.title}"
-                        data-date="${item.date}"
-                        data-desc="${item.desc}">
+                <p>${item.desc}</p>
+
+                <button
+                    class="detail-btn"
+                    data-title="${item.title}"
+                    data-date="${item.date}"
+                    data-desc="${item.desc}">
 
                     Selengkapnya
 
@@ -2380,41 +2390,13 @@ from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
     });
 
 }
-/*================ DATA =================*/
-let activities = JSON.parse(localStorage.getItem("activities")) || [];
-let news = JSON.parse(localStorage.getItem("news")) || [];
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-/*================ ACTIVITY RENDER =================*/
-function renderActivities(){
-
-    const grid = document.getElementById("activityGrid");
-    if(!grid) return;
-
-    grid.innerHTML = "";
-
-    activities.forEach(item => {
-
-        let card = document.createElement("div");
-        card.className = "activity-card";
-
-        card.innerHTML = `
-            <img src="${item.image}" alt="">
-            <div class="activity-info">
-                <span>${item.date}</span>
-                <h3>${item.title}</h3>
-                <p>${item.desc}</p>
-            </div>
-        `;
-
-        grid.appendChild(card);
-    });
-}
 
 
-/*================ NEWS SLIDER (FIXED 1 VERSION ONLY) =================*/
-function initNewsSlider(){
+/* =========================
+   NEWS SLIDER
+========================= */
+
+function initNewsSlider() {
 
     document.querySelectorAll(".news-slider").forEach(slider => {
 
@@ -2423,76 +2405,127 @@ function initNewsSlider(){
 
         let index = 0;
 
-        if(images.length <= 1) return;
+        if (images.length <= 1) return;
 
         setInterval(() => {
 
             index++;
 
-            if(index >= images.length){
+            if (index >= images.length) {
                 index = 0;
             }
 
-            track.style.transform = `translateX(-${index * 100}%)`;
+            track.style.transform =
+                `translateX(-${index * 100}%)`;
 
         }, 3000);
 
     });
+
 }
 
-/*================ MODAL =================*/
+
+/* =========================
+   MODAL
+========================= */
+
 const modal = document.querySelector(".modal");
-const title = document.getElementById("modal-title");
-const date = document.getElementById("modal-date");
-const desc = document.getElementById("modal-desc");
+const modalTitle = document.getElementById("modal-title");
+const modalDate = document.getElementById("modal-date");
+const modalDesc = document.getElementById("modal-desc");
 
 document.addEventListener("click", (e) => {
 
-    if(e.target.classList.contains("detail-btn")){
+    if (e.target.classList.contains("detail-btn")) {
 
-        title.textContent = e.target.dataset.title;
-        date.textContent = e.target.dataset.date;
-        desc.textContent = e.target.dataset.desc;
+        modalTitle.textContent =
+            e.target.dataset.title;
+
+        modalDate.textContent =
+            e.target.dataset.date;
+
+        modalDesc.textContent =
+            e.target.dataset.desc;
 
         modal.classList.add("active");
     }
 
-    if(e.target.classList.contains("close-modal")){
+    if (e.target.classList.contains("close-modal")) {
+
         modal.classList.remove("active");
+
     }
 
 });
 
-/*================ LIGHTBOX =================*/
+
+/* =========================
+   LIGHTBOX
+========================= */
+
 const lightbox = document.querySelector(".lightbox");
 const lightboxImg = document.getElementById("lightbox-img");
 
 document.addEventListener("click", (e) => {
 
-    if(e.target.matches(".gallery-item img")){
+    if (e.target.matches(".gallery-item img")) {
+
         lightbox.classList.add("active");
+
         lightboxImg.src = e.target.src;
+
     }
 
-    if(e.target.classList.contains("close-lightbox")){
+    if (e.target.classList.contains("view-btn")) {
+
+        const img =
+            e.target.parentElement.querySelector("img");
+
+        lightbox.classList.add("active");
+
+        lightboxImg.src = img.src;
+
+    }
+
+    if (e.target.classList.contains("close-lightbox")) {
+
         lightbox.classList.remove("active");
+
     }
 
 });
 
-/*================ MOBILE MENU =================*/
-const hamburger = document.querySelector(".hamburger");
-const navMenu = document.querySelector(".nav-menu");
 
-if(hamburger && navMenu){
+/* =========================
+   MOBILE MENU
+========================= */
+
+const hamburger =
+document.querySelector(".hamburger");
+
+const navMenu =
+document.querySelector(".nav-menu");
+
+if (hamburger && navMenu) {
+
     hamburger.addEventListener("click", () => {
+
         navMenu.classList.toggle("active");
+
     });
+
 }
 
-/*================ NAV ACTIVE =================*/
-const sections = document.querySelectorAll("section[id]");
-const navLinks = document.querySelectorAll(".nav-menu a");
+
+/* =========================
+   ACTIVE NAVIGATION
+========================= */
+
+const sections =
+document.querySelectorAll("section[id]");
+
+const navLinks =
+document.querySelectorAll(".nav-menu a");
 
 window.addEventListener("scroll", () => {
 
@@ -2500,140 +2533,153 @@ window.addEventListener("scroll", () => {
 
     sections.forEach(section => {
 
-        const top = section.offsetTop - 120;
-        const height = section.offsetHeight;
+        const top =
+            section.offsetTop - 120;
 
-        if(scrollY >= top && scrollY < top + height){
+        const height =
+            section.offsetHeight;
 
-            navLinks.forEach(link => link.classList.remove("active"));
+        if (
+            scrollY >= top &&
+            scrollY < top + height
+        ) {
 
-            const active = document.querySelector(
-                ".nav-menu a[href='#" + section.id + "']"
+            navLinks.forEach(link =>
+                link.classList.remove("active")
             );
 
-            if(active) active.classList.add("active");
+            const active =
+                document.querySelector(
+                    `.nav-menu a[href="#${section.id}"]`
+                );
+
+            if (active) {
+
+                active.classList.add("active");
+
+            }
+
         }
 
     });
 
 });
 
-/*================ INIT =================*/
-renderActivities(all);
-renderNews();
-renderProgram();
 
-});
+/* =========================
+   FILTER PROGRAM
+========================= */
 
-function renderActivities(filter = "all"){
-
-    const grid = document.getElementById("activityGrid");
-    grid.innerHTML = "";
-
-    let filtered = activities;
-
-    if(filter !== "all"){
-        filtered = activities.filter(item => item.category === filter);
-    }
-
-    filtered.forEach(item => {
-
-        let card = document.createElement("div");
-        card.className = "activity-card";
-
-        card.innerHTML = `
-            <img src="${item.image}" alt="">
-            <div class="activity-info">
-                <span>${item.date}</span>
-                <h3>${item.title}</h3>
-                <p>${item.desc}</p>
-            </div>
-        `;
-
-        grid.appendChild(card);
-    });
-}
-document.querySelectorAll(".program-card").forEach(btn => {
+document.querySelectorAll(".program-card")
+.forEach(btn => {
 
     btn.addEventListener("click", () => {
 
-        document.querySelectorAll(".program-card")
-        .forEach(b => b.classList.remove("active"));
+        document
+        .querySelectorAll(".program-card")
+        .forEach(card =>
+            card.classList.remove("active")
+        );
 
         btn.classList.add("active");
 
-        const category = btn.dataset.category;
-
-        renderActivities(category);
+        renderActivities(
+            btn.dataset.category
+        );
 
     });
 
 });
 
-const lightbox = document.querySelector(".lightbox");
-const lightboxImg = document.getElementById("lightbox-img");
 
-/* klik tombol lihat gambar */
-document.addEventListener("click", (e) => {
+/* =========================
+   GALLERY BUTTON
+========================= */
 
-    if(e.target.classList.contains("view-btn")){
+const gallery =
+document.querySelector("#gallery");
 
-        const img = e.target.parentElement.querySelector("img");
+const openBtn =
+document.querySelector(".open-gallery-btn");
 
-        lightbox.classList.add("active");
-        lightboxImg.src = img.src;
-    }
+const closeBtn =
+document.querySelector(".close-gallery-btn");
 
-    if(e.target.classList.contains("close-lightbox")){
-        lightbox.classList.remove("active");
-    }
+if (openBtn) {
 
-});
-
-const gallery = document.querySelector("#gallery");
-const openBtn = document.querySelector(".open-gallery-btn");
-const closeBtn = document.querySelector(".close-gallery-btn");
-
-if(openBtn){
     openBtn.addEventListener("click", () => {
+
         gallery.classList.add("active");
+
     });
+
 }
 
-if(closeBtn){
+if (closeBtn) {
+
     closeBtn.addEventListener("click", () => {
+
         gallery.classList.remove("active");
+
     });
+
 }
 
-const heroSlides=document.querySelectorAll(".hero-slide");
 
-let heroIndex=0;
+/* =========================
+   HERO SLIDER
+========================= */
 
-function heroSlider(){
+const heroSlides =
+document.querySelectorAll(".hero-slide");
 
-    heroSlides.forEach(slide=>{
+let heroIndex = 0;
+
+function heroSlider() {
+
+    heroSlides.forEach(slide => {
+
         slide.classList.remove("active");
+
     });
 
-    heroSlides[heroIndex].classList.add("active");
+    heroSlides[heroIndex]
+    .classList.add("active");
 
     heroIndex++;
 
-    if(heroIndex>=heroSlides.length){
-        heroIndex=0;
+    if (heroIndex >= heroSlides.length) {
+
+        heroIndex = 0;
+
     }
 
 }
 
-if(heroSlides.length){
+if (heroSlides.length) {
 
     heroSlider();
 
-    setInterval(heroSlider,4000);
+    setInterval(heroSlider, 4000);
 
 }
-</script>
 
+
+/* =========================
+   INIT
+========================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        renderActivities();
+
+        initNewsSlider();
+
+    }
+);
+</script>
+    
 </body>
 </html>
