@@ -1,26 +1,19 @@
 // Import Firebase
 import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+from "firebase/app";
 
 import { getFirestore }
-from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+from "firebase/app";
 
 
 // Konfigurasi Firebase
 const firebaseConfig = {
-
-    apiKey: "API_KEY_ANDA",
-
-    authDomain: "PROJECT_ID.firebaseapp.com",
-
-    projectId: "PROJECT_ID",
-
-    storageBucket: "PROJECT_ID.firebasestorage.app",
-
-    messagingSenderId: "XXXXXXXX",
-
-    appId: "APP_ID_ANDA"
-
+  apiKey: "AIzaSyB1GVdc2ms-Ga5SYaAVLzp49msiIfez6JI",
+  authDomain: "rcb-199f1.firebaseapp.com",
+  projectId: "rcb-199f1",
+  storageBucket: "rcb-199f1.firebasestorage.app",
+  messagingSenderId: "609750925259",
+  appId: "1:609750925259:web:60f3fcaca92c0e60dd004e"
 };
 
 
